@@ -194,7 +194,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger(
   }
 
   @Override
-  public void download(BackupRestoreContext ctx) throws IOException {
+  public void download(BackupRestoreContext ctx) throws Exception {
 
     final String accountName = ctx.getAccountId();
     final String accountKey = ctx.getSecretKey();
@@ -236,8 +236,10 @@ private static final Logger LOGGER = LoggerFactory.getLogger(
     }
   }
 
-  private void downloadFile(CloudBlobContainer container, String fileKey, long originalSize, String destinationFile) {
-
+  private void downloadFile(CloudBlobContainer container, 
+                            String fileKey, 
+                            long originalSize, 
+                            String destinationFile) throws Exception {
     try {
       final File snapshotFile = new File(destinationFile);
       // Only create parent directory once, if it doesn't exist.
