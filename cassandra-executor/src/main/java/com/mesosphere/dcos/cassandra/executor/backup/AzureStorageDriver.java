@@ -187,7 +187,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger(
   }
 
   private void uploadText(CloudBlobContainer container, String fileKey, String text) {
-    final InputStream inputStream = new ByteArrayInputStream(schema.getBytes(StandardCharsets.UTF_8));
+    final InputStream inputStream = new ByteArrayInputStream(text.getBytes(StandardCharsets.UTF_8));
     LOGGER.info("Initiating upload for schema | key: {}", fileKey);
     uploadStream(container, fileKey, inputStream);
   }
@@ -267,7 +267,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger(
     if (container == null) {
       LOGGER.error("Error downloading snapshots.  Unable to connect to {}, for container {}.",
         ctx.getExternalLocation(), containerName);
-      return;
+      return new String("");
     }
 
     final String key = backupName + "/" + nodeId + "/" + StorageUtil.SCHEMA_FILE;
