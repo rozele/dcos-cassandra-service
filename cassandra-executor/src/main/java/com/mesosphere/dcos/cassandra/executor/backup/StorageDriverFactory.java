@@ -16,26 +16,27 @@ public class StorageDriverFactory {
   private static final Logger LOGGER = LoggerFactory.getLogger(StorageDriverFactory.class);
 
   public static BackupStorageDriver createStorageDriver(CassandraTask cassandraTask) {
-    String externalLocation = null;
+    BackupRestoreContext context = null;
     switch (cassandraTask.getType()) {
       case BACKUP_SNAPSHOT:
-        externalLocation = ((BackupUploadTask)cassandraTask).getBackupRestoreContext().getExternalLocation();
+        context = ((BackupUploadTask)cassandraTask).getBackupRestoreContext();
         break;
       case BACKUP_SCHEMA:
-        externalLocation = ((BackupSchemaTask)cassandraTask).getBackupRestoreContext().getExternalLocation();
+        context = ((BackupSchemaTask)cassandraTask).getBackupRestoreContext();
         break;
     case SCHEMA_RESTORE:
-        externalLocation = ((RestoreSchemaTask)cassandraTask).getBackupRestoreContext().getExternalLocation();
+        context = ((RestoreSchemaTask)cassandraTask).getBackupRestoreContext();
         break;
     case SNAPSHOT_DOWNLOAD:
-        externalLocation = ((DownloadSnapshotTask)cassandraTask).getBackupRestoreContext().getExternalLocation();
+        context = ((DownloadSnapshotTask)cassandraTask).getBackupRestoreContext();
         break;
     }
-    return getBackupStorageDriver(externalLocation);
+
+    LOGGER.info(context.toString());
+    return getBackupStorageDriver(context.getExternalLocation());
   }
 
   private static BackupStorageDriver getBackupStorageDriver(String externalLocation) {
-    LOGGER.info("Getting storage driver for " + externalLocation);
     if (StorageUtil.isAzure(externalLocation)) {
       LOGGER.info("Using the Azure Driver.");
       return new AzureStorageDriver();
