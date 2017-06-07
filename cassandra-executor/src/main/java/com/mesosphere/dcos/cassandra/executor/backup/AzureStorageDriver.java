@@ -31,6 +31,7 @@ import java.nio.file.Files;
 import java.security.InvalidKeyException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import static com.mesosphere.dcos.cassandra.executor.backup.azure.PageBlobOutputStream.ORIGINAL_SIZE_KEY;
@@ -213,6 +214,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger(
     }
 
     if (Objects.equals(ctx.getRestoreType(), new String("new"))) {
+      final String keyPrefix = String.format("%s/%s", backupName, nodeId);
       final Map<String, Long> snapshotFileKeys = getSnapshotFileKeys(container, keyPrefix);
       LOGGER.info("Snapshot files for this node: {}", snapshotFileKeys);
       for (String fileKey : snapshotFileKeys.keySet()) {
