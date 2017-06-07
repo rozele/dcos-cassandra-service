@@ -1,7 +1,6 @@
 package com.mesosphere.dcos.cassandra.executor.backup;
 
 import com.mesosphere.dcos.cassandra.common.tasks.CassandraTask;
-import com.mesosphere.dcos.cassandra.common.tasks.backup.BackupRestoreContext;
 import com.mesosphere.dcos.cassandra.common.tasks.backup.BackupSchemaTask;
 import com.mesosphere.dcos.cassandra.common.tasks.backup.BackupUploadTask;
 import com.mesosphere.dcos.cassandra.common.tasks.backup.DownloadSnapshotTask;
@@ -17,24 +16,23 @@ public class StorageDriverFactory {
   private static final Logger LOGGER = LoggerFactory.getLogger(StorageDriverFactory.class);
 
   public static BackupStorageDriver createStorageDriver(CassandraTask cassandraTask) {
-    BackupRestoreContext context = null;
+    String externalLocation = null;
     switch (cassandraTask.getType()) {
-      case BACKUP_SNAPSHOT:
-        context = ((BackupUploadTask)cassandraTask).getBackupRestoreContext();
+      case BACKUP_UPLOAD:
+        externalLocation = ((BackupUploadTask)cassandraTask).getBackupRestoreContext().getExternalLocation();
         break;
       case BACKUP_SCHEMA:
-        context = ((BackupSchemaTask)cassandraTask).getBackupRestoreContext();
+        externalLocation = ((BackupSchemaTask)cassandraTask).getBackupRestoreContext().getExternalLocation();
         break;
     case SCHEMA_RESTORE:
-        context = ((RestoreSchemaTask)cassandraTask).getBackupRestoreContext();
+        externalLocation = ((RestoreSchemaTask)cassandraTask).getBackupRestoreContext().getExternalLocation();
         break;
     case SNAPSHOT_DOWNLOAD:
-        context = ((DownloadSnapshotTask)cassandraTask).getBackupRestoreContext();
+        externalLocation = ((DownloadSnapshotTask)cassandraTask).getBackupRestoreContext().getExternalLocation();
         break;
     }
 
-    LOGGER.info(context.toString());
-    return getBackupStorageDriver(context.getExternalLocation());
+    return getBackupStorageDriver(externalLocation);
   }
 
   private static BackupStorageDriver getBackupStorageDriver(String externalLocation) {
