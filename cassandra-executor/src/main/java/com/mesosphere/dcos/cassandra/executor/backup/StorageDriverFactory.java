@@ -35,6 +35,7 @@ public class StorageDriverFactory {
   }
 
   private static BackupStorageDriver getBackupStorageDriver(String externalLocation) {
+    LOGGER.info("Getting storage driver for " + externalLocation);
     if (StorageUtil.isAzure(externalLocation)) {
       LOGGER.info("Using the Azure Driver.");
       return new AzureStorageDriver();
